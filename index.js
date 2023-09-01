@@ -16,6 +16,7 @@ const foodColor = "red";
 const unitSize = 25;
 
 let running = false;
+let firstPress = true;
 let xVolecity = unitSize;
 let yVolecity = 0;
 
@@ -45,7 +46,18 @@ backgroundImage.onload = function() {
     DisplayGameStart();
   };
 
-function gameStart() {
+
+function DisplayGameStart() {
+    running = false;
+    gameBoardCtx.font = "40px MV Boli";
+    gameBoardCtx.fillStyle = "black";
+    gameBoardCtx.textAlign = "center";
+    //gameBoardCtx.drawImage(backgroundImage, 0, 0, gameWidth, gameHeight);
+    gameBoardCtx.fillText("press any key to start", gameWidth/2, gameHeight/2);
+    window.addEventListener("keydown", gameStart);
+}
+
+function gameStart(event) {
     window.removeEventListener("keydown", gameStart);
     window.addEventListener("keydown", changeDirection);
     running = true;
@@ -120,7 +132,7 @@ function drawSnake() {
     } )
 }
 function changeDirection(event) {
-    event.preventDefault();
+    //event.preventDefault();
     const keyPressed = event.keyCode;
     const LEFT = 37;
     const UP = 38;
@@ -129,8 +141,8 @@ function changeDirection(event) {
     const currentlyGoingUp = (yVolecity == -unitSize);
     const currentlyGoingDown = (yVolecity == unitSize);
     const currentlyGoingRight = (xVolecity == unitSize);
-    const currentlyGoingLeft = (xVolecity == -unitSize);
-    
+    const currentlyGoingLeft = (xVolecity == -unitSize);            
+
     switch (true) {
         case (keyPressed == LEFT && !currentlyGoingRight):
             xVolecity = -unitSize;
@@ -171,15 +183,6 @@ function checkGameOver() {
         }
     }
 }
-function DisplayGameStart() {
-    running = false;
-    gameBoardCtx.font = "40px MV Boli";
-    gameBoardCtx.fillStyle = "black";
-    gameBoardCtx.textAlign = "center";
-    //gameBoardCtx.drawImage(backgroundImage, 0, 0, gameWidth, gameHeight);
-    gameBoardCtx.fillText("press any key to start", gameWidth/2, gameHeight/2);
-    window.addEventListener("keydown", gameStart);
-}
 
 function DisplayGameOver() {
     running = false;
@@ -194,12 +197,14 @@ function resetGame() {
     score = 0;
     xVolecity = unitSize;
     yVolecity = 0;
+    firstPress = true;
     snake = [
         {x:unitSize*3, y:0},
         {x:unitSize*2, y:0},
         {x:unitSize, y:0},
         {x:0, y:0}
     ];
+    window.removeEventListener("keydown", changeDirection);
     DisplayGameStart();
 }
 
