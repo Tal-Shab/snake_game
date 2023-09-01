@@ -5,8 +5,12 @@ const gameBoardCtx = gameBoard.getContext("2d");
 const scoreText = document.querySelector("#scoreText");
 const resetBtn = document.querySelector("#resetBtn");
 
-const boardBackground = "white";
-const snakeColor = "lightgreen";
+//const boardBackground = "white";
+const backgroundImage = new Image();
+backgroundImage.src = "greenBackground.png"; 
+
+
+const snakeColor = "darkgreen";
 const snakeBorder = "black";
 const foodColor = "red"; 
 const unitSize = 25;
@@ -14,7 +18,15 @@ const unitSize = 25;
 let running = false;
 let xVolecity = unitSize;
 let yVolecity = 0;
-let gameSpeed = 150;
+
+let speeds = {
+    "master":75,
+    "medium":100,
+    "easy":200
+};
+
+let gameSpeed = speeds["medium"];
+
 let foodX;
 let foodY;
 let score = 0;
@@ -25,19 +37,34 @@ let snake = [
     {x:0, y:0}
 ];
 
-
-resetBtn.addEventListener("click", resetGame);
-DisplayGameStart();
+// Wait for the image to load
+backgroundImage.onload = function() {
+    // Draw the background image on the canvas
+    gameBoardCtx.drawImage(backgroundImage, 0, 0, gameWidth, gameHeight);
+    resetBtn.addEventListener("click", resetGame);
+    DisplayGameStart();
+  };
 
 function gameStart() {
     window.removeEventListener("keydown", gameStart);
     window.addEventListener("keydown", changeDirection);
+    event.preventDefault();
     running = true;
     scoreText.textContent = score;
+    setGameSpeed();
     createFood();
     drawFood();
     nextTick();
 }
+function setGameSpeed(){
+    const LevelOptions = document.querySelectorAll('[name="levelOptions"]');
+    for (const option of LevelOptions) {
+        if (option.checked) {
+          gameSpeed = speeds[option.value]
+        }
+    }
+}
+
 function nextTick() {
     if(running){
         setTimeout( () => {
@@ -54,8 +81,9 @@ function nextTick() {
     }
 }
 function clearBoard() {
-    gameBoardCtx.fillStyle = boardBackground;
-    gameBoardCtx.fillRect(0, 0, gameWidth, gameHeight);
+    //gameBoardCtx.fillStyle = boardBackground;
+    //gameBoardCtx.fillRect(0, 0, gameWidth, gameHeight);
+    gameBoardCtx.drawImage(backgroundImage, 0, 0, gameWidth, gameHeight);
 }
 function createFood() {
     function randomFoodPlace(min,max) {
@@ -148,6 +176,7 @@ function DisplayGameStart() {
     gameBoardCtx.font = "40px MV Boli";
     gameBoardCtx.fillStyle = "black";
     gameBoardCtx.textAlign = "center";
+    //gameBoardCtx.drawImage(backgroundImage, 0, 0, gameWidth, gameHeight);
     gameBoardCtx.fillText("press any key to start", gameWidth/2, gameHeight/2);
     window.addEventListener("keydown", gameStart);
 }
