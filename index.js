@@ -48,7 +48,6 @@ backgroundImage.onload = function() {
 function gameStart() {
     window.removeEventListener("keydown", gameStart);
     window.addEventListener("keydown", changeDirection);
-    event.preventDefault();
     running = true;
     scoreText.textContent = score;
     setGameSpeed();
@@ -121,6 +120,7 @@ function drawSnake() {
     } )
 }
 function changeDirection(event) {
+    event.preventDefault();
     const keyPressed = event.keyCode;
     const LEFT = 37;
     const UP = 38;
